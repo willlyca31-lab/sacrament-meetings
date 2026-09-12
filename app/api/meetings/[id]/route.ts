@@ -1,31 +1,29 @@
+import { NextResponse } from 'next/server';
 import { getMeetingById } from '@/lib/meetings-db';
 
 interface RouteContext {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
-export async function GET(
-  _request: Request,
-  context: RouteContext,
-) {
-  const { id } = await context.params;
+export async function GET(_request: Request, context: RouteContext) {
+  const { id } = context.params;
   const meetingId = Number(id);
 
   if (!Number.isInteger(meetingId)) {
-    return Response.json(
+    return NextResponse.json(
       { error: 'Invalid meeting ID.' },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
-  const meeting = getMeetingById(meetingId);
+  const meeting = await getMeetingById(meetingId);
 
   if (!meeting) {
-    return Response.json(
+    return NextResponse.json(
       { error: 'Meeting not found.' },
-      { status: 404 },
+      { status: 404 }
     );
   }
 
-  return Response.json(meeting);
+  return NextResponse.json(meeting);
 }

@@ -4,6 +4,7 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div>
+      {/* Hero Section */}
       <section className="bg-slate-900 text-white">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-2 md:items-center">
           <div>
@@ -50,6 +51,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Features Section */}
       <section className="mx-auto max-w-6xl px-6 py-16">
         <div className="grid gap-6 md:grid-cols-3">
           <div className="rounded-2xl bg-white p-6 shadow-sm">

@@ -6,16 +6,16 @@ function getMostRecentSunday(): string {
   const dayOfWeek = today.getDay();
 
   const sunday = new Date(today);
-
   sunday.setDate(today.getDate() - dayOfWeek);
 
   return sunday.toISOString().split('T')[0];
 }
 
-export default function CurrentMeetingPage() {
+export default async function CurrentMeetingPage() {
   const sunday = getMostRecentSunday();
 
-  const meetings = getMeetings(sunday);
+  // Await the async call to getMeetings
+  const meetings = await getMeetings(sunday);
 
   const currentMeeting = meetings[0];
 

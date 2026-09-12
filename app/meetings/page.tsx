@@ -3,11 +3,10 @@ import type { SacramentMeeting } from '@/lib/types';
 
 async function getMeetings(): Promise<SacramentMeeting[]> {
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    'http://localhost:3000';
+    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
   const response = await fetch(`${baseUrl}/api/meetings`, {
-    cache: 'no-store'
+    cache: 'no-store',
   });
 
   if (!response.ok) {
@@ -21,7 +20,7 @@ export default async function MeetingsPage() {
   const meetings = await getMeetings();
 
   return (
-    <div>
+    <div className="mx-auto max-w-4xl px-6 py-12">
       <div className="mb-6">
         <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
           Meeting history
@@ -38,10 +37,7 @@ export default async function MeetingsPage() {
 
       <div className="grid gap-5">
         {meetings.map((meeting) => (
-          <MeetingCard
-            key={meeting.id}
-            meeting={meeting}
-          />
+          <MeetingCard key={meeting.id} meeting={meeting} />
         ))}
       </div>
     </div>

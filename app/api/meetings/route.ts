@@ -5,6 +5,8 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const date = url.searchParams.get('date');
 
-  const meetings = getMeetings(date);
+  // Await the async call
+  const meetings = await getMeetings(date);
+
   return NextResponse.json(meetings);
 }

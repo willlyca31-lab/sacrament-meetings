@@ -5,24 +5,18 @@ import MeetingDetail from '@/components/MeetingDetail';
 import type { SacramentMeeting } from '@/lib/types';
 
 interface MeetingPageProps {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
+  };
 }
 
-async function getMeeting(
-  id: string
-): Promise<SacramentMeeting | null> {
+async function getMeeting(id: string): Promise<SacramentMeeting | null> {
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    'http://localhost:3000';
+    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
-  const response = await fetch(
-    `${baseUrl}/api/meetings/${id}`,
-    {
-      cache: 'no-store'
-    }
-  );
+  const response = await fetch(`${baseUrl}/api/meetings/${id}`, {
+    cache: 'no-store',
+  });
 
   if (response.status === 404) {
     return null;
@@ -35,10 +29,8 @@ async function getMeeting(
   return response.json() as Promise<SacramentMeeting>;
 }
 
-export default async function MeetingPage({
-  params
-}: MeetingPageProps) {
-  const { id } = await params;
+export default async function MeetingPage({ params }: MeetingPageProps) {
+  const { id } = params;
 
   const meeting = await getMeeting(id);
 
@@ -47,7 +39,7 @@ export default async function MeetingPage({
   }
 
   return (
-    <div>
+    <div className="mx-auto max-w-4xl px-6 py-12">
       <div className="mb-5">
         <Link
           href="/meetings"
