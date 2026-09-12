@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import MeetingDetail from '@/components/MeetingDetail';
-import type { SacramentMeeting } from '@/lib/types';
+import { getMeetingById } from '@/lib/meetings-db';
 
 interface MeetingPageProps {
   params: Promise<{
@@ -10,31 +10,18 @@ interface MeetingPageProps {
   }>;
 }
 
-async function getMeeting(id: string): Promise<SacramentMeeting | null> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-
-  const response = await fetch(`${baseUrl}/api/meetings/${id}`, {
-    cache: 'no-store'
-  });
-
-  if (response.status === 404) {
-    return null;
-  }
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch meeting.');
-  }
-
-  return response.json() as Promise<SacramentMeeting>;
-}
-
 export default async function MeetingPage({
   params
 }: MeetingPageProps) {
   const { id } = await params;
 
-  const meeting = await getMeeting(id);
+  const meetingId = Number(id);
+
+  if (!Number.isInteger(meetingId)) {
+    notFound();
+  }
+
+  const meeting = getMeetingById(meetingId);
 
   if (!meeting) {
     notFound();
