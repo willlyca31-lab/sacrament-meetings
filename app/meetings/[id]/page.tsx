@@ -5,9 +5,9 @@ import MeetingDetail from '@/components/MeetingDetail';
 import type { SacramentMeeting } from '@/lib/types';
 
 interface MeetingPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 async function getMeeting(id: string): Promise<SacramentMeeting | null> {
@@ -15,7 +15,7 @@ async function getMeeting(id: string): Promise<SacramentMeeting | null> {
     process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
   const response = await fetch(`${baseUrl}/api/meetings/${id}`, {
-    cache: 'no-store',
+    cache: 'no-store'
   });
 
   if (response.status === 404) {
@@ -29,8 +29,10 @@ async function getMeeting(id: string): Promise<SacramentMeeting | null> {
   return response.json() as Promise<SacramentMeeting>;
 }
 
-export default async function MeetingPage({ params }: MeetingPageProps) {
-  const { id } = params;
+export default async function MeetingPage({
+  params
+}: MeetingPageProps) {
+  const { id } = await params;
 
   const meeting = await getMeeting(id);
 
