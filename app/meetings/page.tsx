@@ -1,23 +1,8 @@
 import MeetingCard from '@/components/MeetingCard';
-import type { SacramentMeeting } from '@/lib/types';
+import { getMeetings } from '@/lib/meetings-db';
 
-async function getMeetings(): Promise<SacramentMeeting[]> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-
-  const response = await fetch(`${baseUrl}/api/meetings`, {
-    cache: 'no-store',
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch meetings.');
-  }
-
-  return response.json() as Promise<SacramentMeeting[]>;
-}
-
-export default async function MeetingsPage() {
-  const meetings = await getMeetings();
+export default function MeetingsPage() {
+  const meetings = getMeetings();
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
@@ -37,7 +22,10 @@ export default async function MeetingsPage() {
 
       <div className="grid gap-5">
         {meetings.map((meeting) => (
-          <MeetingCard key={meeting.id} meeting={meeting} />
+          <MeetingCard
+            key={meeting.id}
+            meeting={meeting}
+          />
         ))}
       </div>
     </div>

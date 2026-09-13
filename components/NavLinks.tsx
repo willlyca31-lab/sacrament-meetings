@@ -31,12 +31,16 @@ export default function NavLinks() {
           const isActive =
             link.href === '/'
               ? pathname === '/'
-              : pathname.startsWith(link.href);
+              : pathname === link.href ||
+                (link.href === '/meetings' &&
+                  pathname.startsWith('/meetings/') &&
+                  pathname !== '/meetings/current');
 
           return (
             <Link
               key={link.href}
               href={link.href}
+              aria-current={isActive ? 'page' : undefined}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                 isActive
                   ? 'bg-slate-900 text-white'
