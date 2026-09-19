@@ -1,6 +1,8 @@
+
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getMeetingById } from '@/lib/meetings-db';
+import { PrintButton } from '@/components/PrintButton';
 
 export default async function MeetingDetailPage({
   params,
@@ -11,7 +13,7 @@ export default async function MeetingDetailPage({
 
   const meetingId = Number(id);
 
-  if (!Number.isInteger(meetingId)) {
+  if (!Number.isInteger(meetingId) || meetingId <= 0) {
     notFound();
   }
 
@@ -38,16 +40,12 @@ export default async function MeetingDetailPage({
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => window.print()}
-          className="rounded-lg border border-slate-300 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-100"
-        >
-          Print
-        </button>
+        {/* Client Component handles the onClick event */}
+        <PrintButton />
       </div>
 
       <section className="space-y-6">
+        {/* Meeting Leadership */}
         <div>
           <h2 className="text-xl font-bold">
             Meeting Leadership
@@ -64,6 +62,7 @@ export default async function MeetingDetailPage({
           </p>
         </div>
 
+        {/* Opening */}
         <div>
           <h2 className="text-xl font-bold">
             Opening
@@ -81,6 +80,7 @@ export default async function MeetingDetailPage({
           </p>
         </div>
 
+        {/* Announcements */}
         {meeting.announcements.length > 0 && (
           <div>
             <h2 className="text-xl font-bold">
@@ -89,8 +89,8 @@ export default async function MeetingDetailPage({
 
             <ul className="mt-2 list-disc pl-6">
               {meeting.announcements.map(
-                (announcement) => (
-                  <li key={announcement}>
+                (announcement, index) => (
+                  <li key={`${announcement}-${index}`}>
                     {announcement}
                   </li>
                 )
@@ -99,6 +99,7 @@ export default async function MeetingDetailPage({
           </div>
         )}
 
+        {/* Ward Business */}
         {meeting.wardBusiness.length > 0 && (
           <div>
             <h2 className="text-xl font-bold">
@@ -117,6 +118,7 @@ export default async function MeetingDetailPage({
           </div>
         )}
 
+        {/* Sacrament */}
         <div>
           <h2 className="text-xl font-bold">
             Sacrament
@@ -128,6 +130,7 @@ export default async function MeetingDetailPage({
           </p>
         </div>
 
+        {/* Speakers */}
         {meeting.speakers.length > 0 && (
           <div>
             <h2 className="text-xl font-bold">
@@ -155,6 +158,7 @@ export default async function MeetingDetailPage({
           </div>
         )}
 
+        {/* Closing */}
         <div>
           <h2 className="text-xl font-bold">
             Closing
@@ -173,6 +177,7 @@ export default async function MeetingDetailPage({
         </div>
       </section>
 
+      {/* Back to Meetings */}
       <div className="mt-10">
         <Link
           href="/meetings"

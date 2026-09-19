@@ -1,42 +1,76 @@
-import { redirect } from 'next/navigation';
-import { getMeetings } from '@/lib/meetings-db';
+import Link from 'next/link';
+import { getMeetings, getMeetingsTotalPages } from '@/lib/meetings-db';
+import { MeetingSearch } from '@/components/MeetingSearch';
+import { Pagination } from '@/components/Pagination';
+import { MeetingCard } from '@/components/MeetingCard';
 
-function getSundayDate(): string {
-  const today = new Date();
+type MeetingsPageProps = {
+  searchParams: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+};
 
-  const day = today.getDay();
+export default async function MeetingsPage({
+  searchParams,
+}: MeetingsPageProps) {
+  const params = await searchParams;
 
-  const difference = day === 0 ? 0 : -day;
+  const query = params.query ?? '';
+  const page = Math.max(1, Number(params.page) || 1);
 
-  const sunday = new Date(today);
-
-  sunday.setDate(today.getDate() + difference);
-
-  return sunday.toISOString().split('T')[0];
-}
-
-export default async function CurrentMeetingPage() {
-  const sunday = getSundayDate();
-
-  const meetings = await getMeetings('', 1);
-
-  const currentMeeting = meetings.find(
-    (meeting) => meeting.date === sunday
-  );
-
-  if (currentMeeting) {
-    redirect(`/meetings/${currentMeeting.id}`);
-  }
+  const [meetings, totalPages] = await Promise.all([
+    getMeetings(query, page),
+    getMeetingsTotalPages(query),
+  ]);
 
   return (
-    <div className="rounded-2xl bg-white p-8 shadow-sm">
-      <h1 className="text-3xl font-bold">
-        No Meeting Found
-      </h1>
+    <section>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-indigo-600">
+            Meetings
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-slate-900">
+            Sacrament Meetings
+          </h1>
+          <p className="mt-2 text-slate-600">
+            Browse and review scheduled sacrament meeting programs.
+          </p>
+        </div>
 
-      <p className="mt-3 text-slate-600">
-        There is no meeting scheduled for this Sunday.
-      </p>
-    </div>
+        <Link
+          href="/meetings/current"
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+        >
+          Current Meeting
+        </Link>
+      </div>
+
+      <div className="mb-6">
+        <MeetingSearch />
+      </div>
+
+      {meetings.length === 0 ? (
+        <div className="rounded-2xl bg-white p-8 text-center shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-900">
+            No Meetings Found
+          </h2>
+          <p className="mt-2 text-slate-600">
+            Try another search or page.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {meetings.map((meeting) => (
+            <MeetingCard key={meeting.id} meeting={meeting} />
+          ))}
+        </div>
+      )}
+
+      <div className="mt-8">
+        <Pagination totalPages={totalPages} />
+      </div>
+    </section>
   );
 }
