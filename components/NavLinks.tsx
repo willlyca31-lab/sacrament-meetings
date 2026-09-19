@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const links = [
   {
@@ -20,12 +21,17 @@ const links = [
 
 export default function NavLinks() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [isCurrentMeeting, setIsCurrentMeeting] = useState(false);
 
-  const isCurrentMeeting =
-    pathname === '/meetings/current' ||
-    (pathname.startsWith('/meetings/') &&
-      searchParams.get('current') === 'true');
+  useEffect(() => {
+    const current =
+      window.location.pathname === '/meetings/current' ||
+      (window.location.pathname.startsWith('/meetings/') &&
+        new URLSearchParams(window.location.search).get('current') ===
+          'true');
+
+    setIsCurrentMeeting(current);
+  }, [pathname]);
 
   return (
     <nav
