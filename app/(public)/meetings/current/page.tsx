@@ -16,7 +16,7 @@ export default async function CurrentMeetingPage() {
   const meeting = await getMeetingByDate(sunday);
 
   if (meeting) {
-    redirect(`/meetings/${meeting.id}`);
+    redirect(`/meetings/${meeting.id}?current=true`);
   }
 
   return (

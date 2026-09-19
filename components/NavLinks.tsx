@@ -1,25 +1,31 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const links = [
   {
     href: '/',
-    label: 'Home'
+    label: 'Home',
   },
   {
     href: '/meetings',
-    label: 'Meetings'
+    label: 'Meetings',
   },
   {
     href: '/meetings/current',
-    label: 'Current Meeting'
-  }
+    label: 'Current Meeting',
+  },
 ];
 
 export default function NavLinks() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const isCurrentMeeting =
+    pathname === '/meetings/current' ||
+    (pathname.startsWith('/meetings/') &&
+      searchParams.get('current') === 'true');
 
   return (
     <nav
@@ -28,13 +34,18 @@ export default function NavLinks() {
     >
       <div className="mx-auto flex max-w-6xl gap-2 px-6 py-3">
         {links.map((link) => {
-          const isActive =
-            link.href === '/'
-              ? pathname === '/'
-              : pathname === link.href ||
-                (link.href === '/meetings' &&
-                  pathname.startsWith('/meetings/') &&
-                  pathname !== '/meetings/current');
+          let isActive = false;
+
+          if (link.href === '/') {
+            isActive = pathname === '/';
+          } else if (link.href === '/meetings/current') {
+            isActive = isCurrentMeeting;
+          } else if (link.href === '/meetings') {
+            isActive =
+              pathname === '/meetings' ||
+              (pathname.startsWith('/meetings/') &&
+                !isCurrentMeeting);
+          }
 
           return (
             <Link
@@ -43,7 +54,7 @@ export default function NavLinks() {
               aria-current={isActive ? 'page' : undefined}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                 isActive
-                  ? 'bg-slate-900 text-white'
+                  ? 'bg-slate-900 text-white shadow-sm'
                   : 'text-slate-600 hover:bg-white hover:text-slate-900'
               }`}
             >
