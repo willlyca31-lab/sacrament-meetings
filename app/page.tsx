@@ -40,7 +40,7 @@ export default function Home() {
 
           <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
             <Image
-              src="/meeting-house.svg"
+              src="/meeting-house.webp"
               alt="Illustration representing a meeting house"
               width={800}
               height={500}
