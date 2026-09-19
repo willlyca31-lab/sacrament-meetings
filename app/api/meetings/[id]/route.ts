@@ -1,8 +1,9 @@
+import { NextResponse } from 'next/server';
 import { getMeetingById } from '@/lib/meetings-db';
 
-interface RouteContext {
+type RouteContext = {
   params: Promise<{ id: string }>;
-}
+};
 
 export async function GET(
   _request: Request,
@@ -13,20 +14,29 @@ export async function GET(
   const meetingId = Number(id);
 
   if (!Number.isInteger(meetingId)) {
-    return Response.json(
+    return NextResponse.json(
       { error: 'Invalid meeting ID.' },
       { status: 400 }
     );
   }
 
-  const meeting = getMeetingById(meetingId);
+  try {
+    const meeting = await getMeetingById(meetingId);
 
-  if (!meeting) {
-    return Response.json(
-      { error: 'Meeting not found.' },
-      { status: 404 }
+    if (!meeting) {
+      return NextResponse.json(
+        { error: 'Meeting not found.' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(meeting);
+  } catch (error) {
+    console.error('GET /api/meetings/[id] error:', error);
+
+    return NextResponse.json(
+      { error: 'Failed to retrieve meeting.' },
+      { status: 500 }
     );
   }
-
-  return Response.json(meeting);
 }
