@@ -1,7 +1,6 @@
 'use client';
 
 import type { SacramentMeeting } from '@/lib/types';
-import { PrintButton } from './PrintButton';
 
 interface MeetingDetailProps {
   meeting: SacramentMeeting;
@@ -9,7 +8,7 @@ interface MeetingDetailProps {
 
 function Section({
   title,
-  children,
+  children
 }: {
   title: string;
   children: React.ReactNode;
@@ -19,18 +18,16 @@ function Section({
       <h2 className="mb-3 text-lg font-bold text-slate-900">
         {title}
       </h2>
-
       <div className="text-slate-700">{children}</div>
     </section>
   );
 }
 
 export default function MeetingDetail({
-  meeting,
+  meeting
 }: MeetingDetailProps) {
   return (
     <article className="mx-auto max-w-4xl rounded-2xl bg-white p-6 shadow-sm sm:p-10">
-      {/* Meeting Header */}
       <div className="text-center">
         <p className="text-sm font-semibold uppercase tracking-widest text-indigo-600">
           {meeting.meetingType} meeting
@@ -41,19 +38,17 @@ export default function MeetingDetail({
         </h1>
 
         <p className="mt-2 text-slate-500">
-          {new Date(`${meeting.date}T12:00:00`).toLocaleDateString(
-            'en-US',
-            {
-              weekday: 'long',
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric',
-            }
-          )}
+          {new Date(
+            `${meeting.date}T12:00:00`
+          ).toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          })}
         </p>
       </div>
 
-      {/* Presiding and Conducting */}
       <div className="mt-8 grid gap-4 rounded-xl bg-slate-50 p-5 sm:grid-cols-2">
         <div>
           <p className="text-sm text-slate-500">Presiding</p>
@@ -70,7 +65,6 @@ export default function MeetingDetail({
         </div>
       </div>
 
-      {/* Announcements */}
       <Section title="Announcements">
         {meeting.announcements &&
         meeting.announcements.length > 0 ? (
@@ -84,7 +78,6 @@ export default function MeetingDetail({
         )}
       </Section>
 
-      {/* Opening Hymn */}
       <Section title="Opening Hymn">
         <p>
           Hymn #{meeting.openingHymn.number}:{' '}
@@ -92,12 +85,10 @@ export default function MeetingDetail({
         </p>
       </Section>
 
-      {/* Opening Prayer */}
       <Section title="Opening Prayer">
         <p>{meeting.openingPrayer}</p>
       </Section>
 
-      {/* Ward Business */}
       <Section title="Ward Business">
         {meeting.wardBusiness.length > 0 ? (
           <ul className="list-disc space-y-2 pl-5">
@@ -110,7 +101,6 @@ export default function MeetingDetail({
         )}
       </Section>
 
-      {/* Stake Business */}
       <Section title="Stake Business">
         <p>
           {meeting.stakeBusiness
@@ -119,7 +109,6 @@ export default function MeetingDetail({
         </p>
       </Section>
 
-      {/* Sacrament Hymn */}
       <Section title="Sacrament Hymn">
         <p>
           Hymn #{meeting.sacramentHymn.number}:{' '}
@@ -127,7 +116,6 @@ export default function MeetingDetail({
         </p>
       </Section>
 
-      {/* Speakers */}
       <Section title="Speakers and Musical Numbers">
         <div className="space-y-4">
           {meeting.speakers.map((item, index) => (
@@ -155,7 +143,6 @@ export default function MeetingDetail({
         </div>
       </Section>
 
-      {/* Closing Hymn */}
       <Section title="Closing Hymn">
         <p>
           Hymn #{meeting.closingHymn.number}:{' '}
@@ -163,14 +150,18 @@ export default function MeetingDetail({
         </p>
       </Section>
 
-      {/* Closing Prayer */}
       <Section title="Closing Prayer">
         <p>{meeting.closingPrayer}</p>
       </Section>
 
-      {/* Print Button */}
       <div className="mt-8 print:hidden">
-        <PrintButton />
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className="rounded-lg bg-slate-900 px-5 py-3 font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+        >
+          Print Meeting Program
+        </button>
       </div>
     </article>
   );
