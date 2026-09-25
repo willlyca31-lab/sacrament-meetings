@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getMeetings, getMeetingsTotalPages } from '@/lib/meetings-db';
 import { MeetingSearch } from '@/components/MeetingSearch';
 import { Pagination } from '@/components/Pagination';
-import { MeetingCard } from '@/components/MeetingCard';
+import MeetingCard from '@/components/MeetingCard';
 
 type MeetingsPageProps = {
   searchParams: Promise<{
