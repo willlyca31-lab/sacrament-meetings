@@ -1,4 +1,6 @@
+
 import { ensureDb, sql } from './db';
+
 import type {
   MeetingType,
   SacramentMeeting,
@@ -34,25 +36,37 @@ export interface MeetingInput {
   presiding: string;
   conducting: string;
   announcements: string[];
+
   openingHymn: {
     number: number;
     title: string;
   };
+
   openingPrayer: string;
+
   wardBusiness: WardBusinessItem[];
+
   stakeBusiness: boolean;
+
   sacramentHymn: {
     number: number;
     title: string;
   };
+
   speakers: SpeakerItem[];
+
   closingHymn: {
     number: number;
     title: string;
   };
+
   closingPrayer: string;
 }
 
+/**
+ * Convert a database row into the application's
+ * SacramentMeeting type.
+ */
 function rowToMeeting(row: MeetingRow): SacramentMeeting {
   return {
     id: row.id,
@@ -143,7 +157,10 @@ export async function getMeetingsTotalPages(
     (rows as Array<{ count: number }>)[0]?.count ?? 0
   );
 
-  return Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
+  return Math.max(
+    1,
+    Math.ceil(total / ITEMS_PER_PAGE)
+  );
 }
 
 /**
@@ -261,18 +278,30 @@ export async function updateMeetingRecord(
       meeting_type = ${input.meetingType},
       presiding = ${input.presiding},
       conducting = ${input.conducting},
-      announcements = ${JSON.stringify(input.announcements)}::jsonb,
-      opening_hymn_number = ${input.openingHymn.number},
-      opening_hymn_title = ${input.openingHymn.title},
-      opening_prayer = ${input.openingPrayer},
-      ward_business = ${JSON.stringify(input.wardBusiness)}::jsonb,
-      stake_business = ${input.stakeBusiness},
-      sacrament_hymn_number = ${input.sacramentHymn.number},
-      sacrament_hymn_title = ${input.sacramentHymn.title},
-      speakers = ${JSON.stringify(input.speakers)}::jsonb,
-      closing_hymn_number = ${input.closingHymn.number},
-      closing_hymn_title = ${input.closingHymn.title},
-      closing_prayer = ${input.closingPrayer}
+      announcements =
+        ${JSON.stringify(input.announcements)}::jsonb,
+      opening_hymn_number =
+        ${input.openingHymn.number},
+      opening_hymn_title =
+        ${input.openingHymn.title},
+      opening_prayer =
+        ${input.openingPrayer},
+      ward_business =
+        ${JSON.stringify(input.wardBusiness)}::jsonb,
+      stake_business =
+        ${input.stakeBusiness},
+      sacrament_hymn_number =
+        ${input.sacramentHymn.number},
+      sacrament_hymn_title =
+        ${input.sacramentHymn.title},
+      speakers =
+        ${JSON.stringify(input.speakers)}::jsonb,
+      closing_hymn_number =
+        ${input.closingHymn.number},
+      closing_hymn_title =
+        ${input.closingHymn.title},
+      closing_prayer =
+        ${input.closingPrayer}
     WHERE id = ${id}
     RETURNING *
   `;
@@ -307,13 +336,17 @@ export async function addMeeting(
 ): Promise<SacramentMeeting> {
   return createMeetingRecord({
     date: data.date,
+
     meetingType: data.meetingType,
+
     presiding: data.presiding,
+
     conducting: data.conducting,
 
     announcements: data.announcements ?? [],
 
     openingHymn: data.openingHymn,
+
     openingPrayer: data.openingPrayer,
 
     wardBusiness: data.wardBusiness ?? [],
@@ -325,6 +358,7 @@ export async function addMeeting(
     speakers: data.speakers ?? [],
 
     closingHymn: data.closingHymn,
+
     closingPrayer: data.closingPrayer,
   });
 }

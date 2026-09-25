@@ -19,9 +19,12 @@ const MeetingFormSchema = z.object({
     .min(1, 'Date is required.')
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date.'),
 
-  meetingType: z.enum(['regular', 'testimony', 'stake', 'general'], {
-    message: 'Select a valid meeting type.',
-  }),
+  meetingType: z.enum(
+    ['regular', 'testimony', 'stake', 'general'],
+    {
+      message: 'Select a valid meeting type.',
+    }
+  ),
 
   presiding: z
     .string()
@@ -86,7 +89,9 @@ export type MeetingFormValues = z.infer<typeof MeetingFormSchema>;
 
 export interface MeetingFormState {
   message: string | null;
-  errors: Partial<Record<keyof MeetingFormValues, string[]>>;
+  errors: Partial<
+    Record<keyof MeetingFormValues, string[]>
+  >;
 }
 
 export const initialMeetingFormState: MeetingFormState = {
@@ -105,7 +110,9 @@ function parseLines(value: string | undefined): string[] {
     .filter((line) => line.length > 0);
 }
 
-function parseSpeakers(value: string | undefined): SpeakerItem[] {
+function parseSpeakers(
+  value: string | undefined
+): SpeakerItem[] {
   return parseLines(value).map((line) => {
     const [name = '', topic = '', type = 'speaker'] = line
       .split('|')
@@ -114,12 +121,17 @@ function parseSpeakers(value: string | undefined): SpeakerItem[] {
     return {
       name,
       topic,
-      type: type === 'musical-number' ? 'musical-number' : 'speaker',
+      type:
+        type === 'musical-number'
+          ? 'musical-number'
+          : 'speaker',
     };
   });
 }
 
-function buildMeetingInput(data: MeetingFormValues): MeetingInput {
+function buildMeetingInput(
+  data: MeetingFormValues
+): MeetingInput {
   return {
     date: data.date,
 
@@ -138,9 +150,11 @@ function buildMeetingInput(data: MeetingFormValues): MeetingInput {
 
     openingPrayer: data.openingPrayer,
 
-    wardBusiness: parseLines(data.wardBusiness).map((description) => ({
-      description,
-    })),
+    wardBusiness: parseLines(data.wardBusiness).map(
+      (description) => ({
+        description,
+      })
+    ),
 
     stakeBusiness: data.stakeBusiness === 'on',
 
@@ -170,7 +184,8 @@ export async function createMeeting(
 
   if (!validated.success) {
     return {
-      message: 'Please fix the errors below and try again.',
+      message:
+        'Please fix the errors below and try again.',
       errors: validated.error.flatten().fieldErrors,
     };
   }
@@ -180,7 +195,10 @@ export async function createMeeting(
   try {
     await createMeetingRecord(input);
   } catch (error) {
-    console.error('Failed to create meeting:', error);
+    console.error(
+      'Failed to create meeting:',
+      error
+    );
 
     return {
       message:
@@ -205,7 +223,8 @@ export async function updateMeeting(
 
   if (!validated.success) {
     return {
-      message: 'Please fix the errors below and try again.',
+      message:
+        'Please fix the errors below and try again.',
       errors: validated.error.flatten().fieldErrors,
     };
   }
@@ -217,7 +236,10 @@ export async function updateMeeting(
   try {
     updated = await updateMeetingRecord(id, input);
   } catch (error) {
-    console.error('Failed to update meeting:', error);
+    console.error(
+      'Failed to update meeting:',
+      error
+    );
 
     return {
       message:
@@ -228,7 +250,8 @@ export async function updateMeeting(
 
   if (!updated) {
     return {
-      message: 'This meeting no longer exists. It may have been deleted.',
+      message:
+        'This meeting no longer exists. It may have been deleted.',
       errors: {},
     };
   }
@@ -239,13 +262,19 @@ export async function updateMeeting(
   redirect('/meetings');
 }
 
-export async function deleteMeeting(formData: FormData): Promise<void> {
+export async function deleteMeeting(
+  formData: FormData
+): Promise<void> {
   const rawId = formData.get('id');
 
   const id = Number(rawId);
 
   if (!Number.isInteger(id)) {
-    console.error('Failed to delete meeting: invalid id', rawId);
+    console.error(
+      'Failed to delete meeting: invalid id',
+      rawId
+    );
+
     throw new Error('Invalid meeting ID.');
   }
 
@@ -256,7 +285,10 @@ export async function deleteMeeting(formData: FormData): Promise<void> {
       throw new Error('Meeting not found.');
     }
   } catch (error) {
-    console.error('Failed to delete meeting:', error);
+    console.error(
+      'Failed to delete meeting:',
+      error
+    );
 
     throw new Error(
       'Unable to delete the meeting. Please try again.'
